@@ -1097,32 +1097,43 @@ function bindEvents() {
       errEl.classList.remove("hidden");
       return;
     }
-    const email = $("email").value.trim();
-    const password = $("password").value;
-    if (!email || !password) {
-      errEl.textContent = "请输入邮箱和密码";
+    const pin = $("password").value.trim();
+    if (!pin) {
+      errEl.textContent = "请输入密码";
       errEl.classList.remove("hidden");
       return;
     }
     const btn = $("loginForm").querySelector("button[type='submit']");
     btn.disabled = true;
-    btn.textContent = "登录中...";
-    const { data, error } = await state.sb.auth.signInWithPassword({ email, password });
+    btn.textContent = "验证中...";
+
+    // 两个固定账号：后台密码是 kapi- + 4 位密码，用户只输入 4 位
+    const accounts = [
+      { email: "me@example.com", password: "kapi-" + pin },
+      { email: "friend@example.com", password: "kapi-" + pin },
+    ];
+    let user = null;
+    let lastError = null;
+    for (const account of accounts) {
+      const { data, error } = await state.sb.auth.signInWithPassword(account);
+      if (!error && data && data.user) {
+        user = data.user;
+        break;
+      }
+      lastError = error;
+    }
     btn.disabled = false;
     btn.textContent = "登录";
-    if (error) {
-      const msg = error.message || "";
-      errEl.textContent = msg.includes("Invalid login credentials")
-        ? "邮箱或密码错误"
-        : msg.includes("Email not confirmed")
-        ? "邮箱还没验证：请在 Supabase Auth 设置里关闭邮箱确认"
-        : msg.includes("Failed to fetch")
+
+    if (!user) {
+      const msg = (lastError && lastError.message) || "";
+      errEl.textContent = msg.includes("Failed to fetch")
         ? "连不上 Supabase：检查网络和 config.js 里的 URL"
-        : "登录失败：" + msg;
+        : "密码不正确";
       errEl.classList.remove("hidden");
       return;
     }
-    await enterApp(data.user);
+    await enterApp(user);
   });
 
   // Tab
