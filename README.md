@@ -15,7 +15,7 @@
 - 网站：<https://ghl2006.github.io/kapi-ledger/>
 - 代码：<https://github.com/GHL2006/kapi-ledger>
 
-> 登录方式：只需要输入密码（你和朋友各用自己的 4 位密码）；密码不写进公开仓库，需要时私聊获取或到 Supabase 后台重置。
+> 登录方式：只需要输入密码（你和朋友各用自己的 6 位密码，登录一次后浏览器会记住 session）；密码不写进公开仓库，需要时私聊获取或到 Supabase 后台重置。
 
 ---
 
@@ -83,11 +83,11 @@ kapi-ledger/
 
 | 邮箱（示例） | 后台密码（注意规则） | 显示名 |
 | --- | --- | --- |
-| `me@example.com` | `kapi-1234`（即 `kapi-` + 你的 4 位密码） | 我 |
-| `friend@example.com` | `kapi-4321`（即 `kapi-` + 朋友的 4 位密码） | 朋友 |
+| `me@example.com` | `<你的 6 位密码>` | 我 |
+| `friend@example.com` | `<朋友的 6 位密码>` | 朋友 |
 
 > 邮箱只是登录名，不需要真的能收邮件（因为关闭了邮箱验证）。
-> 前端只让用户输入 4 位密码，代码会自动拼成 `kapi-` + 4 位密码去登录；所以 Supabase 后台的密码必须按这个规则设置。**不要把密码提交到仓库**。
+> 前端只让用户输入密码，代码会依次用两个账号尝试登录；所以 Supabase 后台的密码要和用户输入的 6 位密码一致。**密码不要提交到仓库**，当前密码由管理员在 Supabase 后台设置。
 
 创建后到 SQL Editor 执行（把邮箱换成你实际的）：
 
@@ -133,7 +133,7 @@ cd kapi-ledger
 python -m http.server 5500
 ```
 
-浏览器打开 <http://127.0.0.1:5500/>，输入你的 4 位密码登录。
+浏览器打开 <http://127.0.0.1:5500/>，输入你的 6 位密码登录。
 
 > 不要直接双击 `index.html`（`file://` 下 Supabase 和图片可能受限），用本地 HTTP 服务。
 
@@ -199,7 +199,7 @@ python -m http.server 5500
 
 | 问题 | 解决 |
 | --- | --- |
-| 登录提示“密码不正确” | 4 位密码不对，或 Supabase 后台密码不是 `kapi-` + 4 位 |
+| 登录提示“密码不正确” | 6 位密码不对，或 Supabase 后台密码不一致 |
 | 登录提示 `Email not confirmed` | Authentication → Providers → Email 关闭 Confirm email |
 | 页面一直显示“还没配置 Supabase” | `js/config.js` 没填对 |
 | 图片上传失败 | 检查 `bill-images` 桶是否存在、Storage 策略是否执行 |
