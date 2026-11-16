@@ -10,6 +10,13 @@
 - 纯前端：HTML + TailwindCSS + JavaScript，数据存 Supabase（PostgreSQL + Storage + Auth），部署在 GitHub Pages。
 - **不需要服务器、不需要域名、不需要备案、不需要数据库运维。**
 
+## 线上地址
+
+- 网站：<https://ghl2006.github.io/kapi-ledger/>
+- 代码：<https://github.com/GHL2006/kapi-ledger>
+
+> 登录账号：`me@example.com` / `me123456`、`friend@example.com` / `friend123456`（可在 Supabase 后台修改密码）。
+
 ---
 
 ## 一、技术栈
