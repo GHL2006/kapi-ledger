@@ -538,41 +538,13 @@ function renderStats() {
     }
   `;
 
-  // 饼图
+  // 饼图（ECharts 按需加载，减少首屏体积）
   const pieData = rows
     .filter((r) => r.cur > 0)
     .map((r) => ({ name: r.cat.name, value: Number(r.cur.toFixed(2)), itemStyle: { color: r.cat.color } }));
   $("pieEmpty").classList.toggle("hidden", pieData.length > 0);
-  if (!state.chart && window.echarts) {
-    state.chart = echarts.init($("pieChart"));
-    window.addEventListener("resize", () => state.chart && state.chart.resize());
-  }
-  if (state.chart) {
-    if (!pieData.length) {
-      state.chart.clear();
-    } else {
-      state.chart.setOption(
-        {
-          tooltip: {
-            trigger: "item",
-            formatter: (p) => `${p.name}<br/>¥${fmtAmount(p.value)}（${p.percent}%）`,
-          },
-          series: [
-            {
-              type: "pie",
-              radius: ["40%", "70%"],
-              center: ["50%", "52%"],
-              avoidLabelOverlap: true,
-              itemStyle: { borderColor: "#fff", borderWidth: 2 },
-              label: { formatter: "{b}\n{d}%", fontSize: 10, color: "#666" },
-              data: pieData,
-            },
-          ],
-        },
-        true
-      );
-    }
-  }
+  state.pieData = pieData;
+  renderPieChart();
 
   // 分类表格
   if (!rows.length) {
@@ -609,8 +581,71 @@ function renderStats() {
   loadAnnual();
 }
 
-async function loadAnnual() {
-  if (!state.user) return;
+/* ------------------------- 饼图（按需加载 ECharts） ------------------------- */
+let echartsLoading = null;
+
+function ensureEcharts() {
+  if (window.echarts) return Promise.resolve(window.echarts);
+  if (!echartsLoading) {
+    echartsLoading = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "vendor/echarts.min.js";
+      script.onload = () => resolve(window.echarts);
+      script.onerror = () => reject(new Error("图表库加载失败"));
+      document.body.appendChild(script);
+    });
+  }
+  return echartsLoading;
+}
+
+function drawPie(pieData) {
+  if (!state.chart) return;
+  if (!pieData || !pieData.length) {
+    state.chart.clear();
+    return;
+  }
+  state.chart.setOption(
+    {
+      tooltip: {
+        trigger: "item",
+        formatter: (p) => `${p.name}<br/>¥${fmtAmount(p.value)}（${p.percent}%）`,
+      },
+      series: [
+        {
+          type: "pie",
+          radius: ["40%", "70%"],
+          center: ["50%", "52%"],
+          avoidLabelOverlap: true,
+          itemStyle: { borderColor: "#fff", borderWidth: 2 },
+          label: { formatter: "{b}\n{d}%", fontSize: 10, color: "#666" },
+          data: pieData,
+        },
+      ],
+    },
+    true
+  );
+}
+
+function renderPieChart() {
+  const pieData = state.pieData || [];
+  if (state.chart) {
+    drawPie(pieData);
+    return;
+  }
+  ensureEcharts()
+    .then(() => {
+      if (!state.chart) {
+        state.chart = echarts.init($("pieChart"));
+        window.addEventListener("resize", () => state.chart && state.chart.resize());
+      }
+      drawPie(state.pieData || []);
+    })
+    .catch(() => {
+      /* 图表加载失败不影响报表文字和表格 */
+    });
+}
+
+async function loadAnnual() {  if (!state.user) return;
   const year = state.annualYear || state.year;
   const key = `${state.viewOwnerId}-${year}`;
   if (state.annualCache && state.annualCache.key === key) {
@@ -1204,6 +1239,9 @@ function bindEvents() {
 
 /* ------------------------- 启动 ------------------------- */
 bindEvents();
+// 页面脚本加载完成后再允许提交登录，避免用户提前点击导致表单原样刷新
+const loginSubmitBtn = $("loginForm").querySelector("button[type='submit']");
+if (loginSubmitBtn) loginSubmitBtn.disabled = false;
 boot().catch((e) => {
   console.error(e);
   showLogin();
