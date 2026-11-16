@@ -15,7 +15,7 @@
 - 网站：<https://ghl2006.github.io/kapi-ledger/>
 - 代码：<https://github.com/GHL2006/kapi-ledger>
 
-> 登录账号：`me@example.com` / `me123456`、`friend@example.com` / `friend123456`（可在 Supabase 后台修改密码）。
+> 登录账号和密码不放在公开仓库里，请私聊获取，或到 Supabase 后台重置。
 
 ---
 
@@ -81,12 +81,12 @@ kapi-ledger/
 
 **Authentication → Users → Add user**，分别创建：
 
-| 邮箱（示例） | 密码（示例） | 显示名 |
+| 邮箱（示例） | 密码（自己设置） | 显示名 |
 | --- | --- | --- |
-| `me@example.com` | `me123456` | 我 |
-| `friend@example.com` | `friend123456` | 朋友 |
+| `me@example.com` | `<你的强密码>` | 我 |
+| `friend@example.com` | `<你的强密码>` | 朋友 |
 
-> 邮箱只是登录名，不需要真的能收邮件（因为关闭了邮箱验证）。密码可以自己改。
+> 邮箱只是登录名，不需要真的能收邮件（因为关闭了邮箱验证）。密码请用强密码，**不要把密码提交到仓库**。
 
 创建后到 SQL Editor 执行（把邮箱换成你实际的）：
 
