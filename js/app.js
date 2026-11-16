@@ -1107,10 +1107,10 @@ function bindEvents() {
     btn.disabled = true;
     btn.textContent = "验证中...";
 
-    // 两个固定账号：后台密码是 kapi- + 4 位密码，用户只输入 4 位
+    // 两个固定账号：用户只输入密码，依次尝试两个账号
     const accounts = [
-      { email: "me@example.com", password: "kapi-" + pin },
-      { email: "friend@example.com", password: "kapi-" + pin },
+      { email: "me@example.com", password: pin },
+      { email: "friend@example.com", password: pin },
     ];
     let user = null;
     let lastError = null;
