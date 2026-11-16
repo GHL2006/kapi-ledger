@@ -17,17 +17,15 @@
       <p class="login-sub">两个人的小账本，各自记，随时看</p>
 
       <form id="loginForm" class="login-card">
-        <label class="field-label" for="email">邮箱</label>
-        <input id="email" type="email" autocomplete="username" placeholder="you@example.com" class="field-input">
-
-        <label class="field-label mt-4" for="password">密码</label>
-        <input id="password" type="password" autocomplete="current-password" placeholder="请输入密码" class="field-input">
+        <label class="field-label" for="password">密码</label>
+        <input id="password" type="password" inputmode="numeric" autocomplete="current-password"
+               placeholder="请输入你的密码" class="field-input">
 
         <button type="submit" class="primary-btn mt-6" disabled>登录</button>
         <p id="loginError" class="login-error hidden"></p>
       </form>
 
-      <p class="login-tip">两个人各自使用自己的邮箱和密码登录，账号在 Supabase 后台创建。</p>
+      <p class="login-tip">只需要输入密码：你和朋友各用自己的 4 位密码。</p>
       <p id="configWarning" class="config-warning hidden">⚠️ 还没配置 Supabase：请打开 js/config.js 填入项目 URL 和 anon key。</p>
     </div>
   </section>
