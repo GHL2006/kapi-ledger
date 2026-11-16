@@ -15,7 +15,7 @@
 - 网站：<https://ghl2006.github.io/kapi-ledger/>
 - 代码：<https://github.com/GHL2006/kapi-ledger>
 
-> 登录账号和密码不放在公开仓库里，请私聊获取，或到 Supabase 后台重置。
+> 登录方式：只需要输入密码（你和朋友各用自己的 4 位密码）；密码不写进公开仓库，需要时私聊获取或到 Supabase 后台重置。
 
 ---
 
@@ -27,7 +27,7 @@
 | 交互 | 原生 JavaScript |
 | 数据库 | Supabase PostgreSQL（免费 500MB） |
 | 图片 | Supabase Storage（免费 1GB，私有桶 + 签名链接） |
-| 登录 | Supabase Auth（邮箱 + 密码，固定两个账号） |
+| 登录 | Supabase Auth（只输密码，固定两个账号，前端隐藏邮箱） |
 | 图表 | ECharts（本地 vendor 文件） |
 | 部署 | GitHub Pages（免费 HTTPS） |
 
@@ -81,12 +81,13 @@ kapi-ledger/
 
 **Authentication → Users → Add user**，分别创建：
 
-| 邮箱（示例） | 密码（自己设置） | 显示名 |
+| 邮箱（示例） | 后台密码（注意规则） | 显示名 |
 | --- | --- | --- |
-| `me@example.com` | `<你的强密码>` | 我 |
-| `friend@example.com` | `<你的强密码>` | 朋友 |
+| `me@example.com` | `kapi-1234`（即 `kapi-` + 你的 4 位密码） | 我 |
+| `friend@example.com` | `kapi-4321`（即 `kapi-` + 朋友的 4 位密码） | 朋友 |
 
-> 邮箱只是登录名，不需要真的能收邮件（因为关闭了邮箱验证）。密码请用强密码，**不要把密码提交到仓库**。
+> 邮箱只是登录名，不需要真的能收邮件（因为关闭了邮箱验证）。
+> 前端只让用户输入 4 位密码，代码会自动拼成 `kapi-` + 4 位密码去登录；所以 Supabase 后台的密码必须按这个规则设置。**不要把密码提交到仓库**。
 
 创建后到 SQL Editor 执行（把邮箱换成你实际的）：
 
@@ -132,7 +133,7 @@ cd kapi-ledger
 python -m http.server 5500
 ```
 
-浏览器打开 <http://127.0.0.1:5500/>，用上面创建的账号登录。
+浏览器打开 <http://127.0.0.1:5500/>，输入你的 4 位密码登录。
 
 > 不要直接双击 `index.html`（`file://` 下 Supabase 和图片可能受限），用本地 HTTP 服务。
 
@@ -198,7 +199,7 @@ python -m http.server 5500
 
 | 问题 | 解决 |
 | --- | --- |
-| 登录提示 `Invalid login credentials` | 邮箱/密码错误，或用户没创建 |
+| 登录提示“密码不正确” | 4 位密码不对，或 Supabase 后台密码不是 `kapi-` + 4 位 |
 | 登录提示 `Email not confirmed` | Authentication → Providers → Email 关闭 Confirm email |
 | 页面一直显示“还没配置 Supabase” | `js/config.js` 没填对 |
 | 图片上传失败 | 检查 `bill-images` 桶是否存在、Storage 策略是否执行 |
